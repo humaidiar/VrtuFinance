@@ -1,0 +1,131 @@
+Create a Modern Diminishing Musharaka Calculator using React, TypeScript, and Tailwind CSS
+
+Requirements:
+
+1. 4-step guided form with progress indicator
+2. Clean, minimal design inspired by homeshare.co.nz
+3. New Zealand currency (NZD) and financial standards
+4. Responsive design for all devices
+5. Shariah-compliant calculations with clear transparency
+
+Core Features:
+
+Step 1: User Goals
+- Radio button selection: First Home, Investment Property, New Home, Refinancing
+- Dropdown for location (Auckland, Wellington, Christchurch, Hamilton, Dunedin, etc.)
+- Optional: Purpose of financing (personal use, rental income, commercial use)
+
+Step 2: Financial Information
+- Annual gross household income (number input with $ prefix)
+- Net monthly take-home income (auto-calculated or manual input)
+- Savings for initial contribution (number input with $ prefix)
+- Monthly living expenses (number input with $ prefix)
+- Existing financial commitments/debts (number input with $ prefix)
+- Optional: Expected property appreciation rate
+- Add financial health indicator showing debt-to-income ratio
+- Add financial summary box at bottom showing:
+  - Monthly income
+  - Available for home financing
+  - Estimated financing capacity
+  - Affordability score (color-coded: green, amber, red)
+  - Recommended property price range
+
+Step 3: Property Details
+- Estimated property price (number input with $ prefix)
+- Deposit amount (number input with $ prefix)
+- Show ownership percentage calculated in real-time
+- Additional property costs (legal fees, valuation, moving costs)
+- Optional: Property type (existing home, new construction, apartment)
+- Estimated maintenance costs
+- Show Loan-to-Value (LVR) ratio
+
+Step 4: Payment Plan Preview
+- Monthly payment breakdown with visual pie chart
+- Rent vs. share purchase payments
+- Financing term options (15, 20, 25, 30 years)
+- Early payoff scenarios
+- Basic summary with tax benefits information
+- "Get Your Full Projection" and "Download Summary" buttons
+
+Full Projection View:
+- Complete Diminishing Musharaka calculation showing:
+  * Provider's marked-up share (20-35% customizable markup)
+  * Clear distinction between rent and share purchase payments
+  * Provider's profit source transparent visualization
+- Interactive dashboard with:
+  * Modern dual-axis chart (ownership % and weekly rental $)
+  * Animated bar chart showing payment composition
+  * Cumulative cost comparison vs. conventional finance
+  * Break-even analysis chart
+  * Ownership progression timeline with milestones
+- Advanced Table View:
+  * Year-by-year detailed breakdown
+  * Monthly payment schedule option
+  * Equity build-up tracking
+  * Interest equivalent calculation for comparison
+  * Export to CSV/PDF functionality
+- Financial Summary Cards:
+  * Total cost of financing
+  * Total rent paid
+  * Total shares purchased
+  * Comparison with conventional mortgage
+  * Tax implications summary
+  * Early payoff scenarios
+- Educational Section:
+  * Animated explanation of Diminishing Musharaka
+  * Interactive FAQ section
+  * Shariah compliance certification display
+  * Glossary of Islamic finance terms
+  * Risk factors and considerations
+
+Advanced Features:
+1. Sensitivity Analysis:
+   - Property value appreciation scenarios
+   - Interest rate comparison
+   - Income fluctuation modeling
+
+2. Comparison Tools:
+   - Side-by-side comparison with conventional mortgages
+   - Alternative Islamic finance products comparison
+   - Investment vs. home buying calculator
+
+3. Customization Options:
+   - Adjustable markup percentage (20-35%)
+   - Different rental rate scenarios
+   - Accelerated payment calculator
+   - Balloon payment options
+
+4. Risk Assessment:
+   - Stress test with job loss scenario
+   - Economic downturn impact analysis
+   - Property value decline simulation
+
+5. Integration Features:
+   - Save and revisit calculations
+   - Email report functionality
+   - Print-friendly format
+   - Social sharing options
+   - Connect with Islamic finance advisors
+
+Technical Requirements:
+- Use Tailwind CSS for styling with dark mode support
+- Calculate simulations based on:
+  * 3.5-5% annual rental rate (adjustable)
+  * 20-35% markup on provider's share (customizable)
+  * Rent = (provider's actual share) × (rental rate) × (1 - customer ownership %)
+- Performance optimization for complex calculations
+- Progressive Web App (PWA) capabilities
+- Accessibility compliance (WCAG 2.1 AA)
+- Multi-language support (English, Arabic)
+- Animated micro-interactions for better UX
+- Loading states and skeleton screens
+- Error handling with user-friendly messages
+
+Icons needed: Lucide React icons for all interactions
+
+Design Philosophy:
+- Transparency is key - make all calculations visible
+- Educational first - help users understand Islamic finance
+- Mobile-first with desktop enhancements
+- Confidence-building UI with trust indicators
+- Gamification elements for financial milestones
