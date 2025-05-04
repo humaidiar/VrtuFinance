@@ -31,25 +31,17 @@ const Header: React.FC = () => {
           
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8 text-sm">
-            <Link href="/">
-              <a className={`font-medium ${isActive('/') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
-                Home
-              </a>
+            <Link href="/" className={`font-medium ${isActive('/') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
+              Home
             </Link>
-            <Link href="/how-it-works">
-              <a className={`font-medium ${isActive('/how-it-works') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
-                How It Works
-              </a>
+            <Link href="/how-it-works" className={`font-medium ${isActive('/how-it-works') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
+              How It Works
             </Link>
-            <Link href="/calculator">
-              <a className={`font-medium ${isActive('/calculator') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
-                Calculator
-              </a>
+            <Link href="/calculator" className={`font-medium ${isActive('/calculator') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
+              Calculator
             </Link>
-            <Link href="/about">
-              <a className={`font-medium ${isActive('/about') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
-                About Us
-              </a>
+            <Link href="/about" className={`font-medium ${isActive('/about') ? 'text-emerald-700' : 'text-gray-700 hover:text-emerald-700'}`}>
+              About Us
             </Link>
           </nav>
           
@@ -79,37 +71,33 @@ const Header: React.FC = () => {
         <div className="md:hidden bg-white border-t border-gray-100 py-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex flex-col space-y-3 py-3">
-              <Link href="/">
-                <a 
-                  className={`px-3 py-2 rounded-md ${isActive('/') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
-                  onClick={closeMenu}
-                >
-                  Home
-                </a>
+              <Link 
+                href="/"
+                className={`px-3 py-2 rounded-md ${isActive('/') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
+                onClick={closeMenu}
+              >
+                Home
               </Link>
-              <Link href="/how-it-works">
-                <a 
-                  className={`px-3 py-2 rounded-md ${isActive('/how-it-works') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
-                  onClick={closeMenu}
-                >
-                  How It Works
-                </a>
+              <Link 
+                href="/how-it-works"
+                className={`px-3 py-2 rounded-md ${isActive('/how-it-works') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
+                onClick={closeMenu}
+              >
+                How It Works
               </Link>
-              <Link href="/calculator">
-                <a 
-                  className={`px-3 py-2 rounded-md ${isActive('/calculator') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
-                  onClick={closeMenu}
-                >
-                  Calculator
-                </a>
+              <Link 
+                href="/calculator"
+                className={`px-3 py-2 rounded-md ${isActive('/calculator') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
+                onClick={closeMenu}
+              >
+                Calculator
               </Link>
-              <Link href="/about">
-                <a 
-                  className={`px-3 py-2 rounded-md ${isActive('/about') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
-                  onClick={closeMenu}
-                >
-                  About Us
-                </a>
+              <Link 
+                href="/about"
+                className={`px-3 py-2 rounded-md ${isActive('/about') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'}`}
+                onClick={closeMenu}
+              >
+                About Us
               </Link>
               <div className="pt-2">
                 <Link href="/calculator">
