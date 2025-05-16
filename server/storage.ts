@@ -42,11 +42,11 @@ export class MemStorage implements IStorage {
   
   async createLead(insertLead: InsertLead): Promise<Lead> {
     const id = this.currentLeadId++;
-    const createdAt = new Date();
+    const created_at = new Date().toISOString();
     const lead: Lead = { 
       ...insertLead, 
       id, 
-      createdAt 
+      created_at 
     };
     this.leads.set(id, lead);
     return lead;

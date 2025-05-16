@@ -52,6 +52,15 @@ export const calculationResultSchema = z.object({
       remainingProviderShare: z.number(),
     })
   ),
+  propertyDetails: z.object({
+    propertyType: z.enum(["existing", "new-construction", "apartment"]),
+    bedroomCount: z.number(),
+    hasBuilderReport: z.boolean(),
+    propertyPrice: z.number(),
+    depositAmount: z.number(),
+    appliedMarkup: z.number(),
+    appreciationRate: z.number()
+  }).optional()
 });
 
 export type CalculationResult = z.infer<typeof calculationResultSchema>;
