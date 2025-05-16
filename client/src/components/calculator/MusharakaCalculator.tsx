@@ -27,9 +27,12 @@ const MusharakaCalculator: React.FC = () => {
       expenses: 3000,
       commitments: 5000,
       propertyPrice: 800000,
-      depositAmount: 200000,
+      depositAmount: 200000, // This is 25% of property price
       term: 25,
       appreciationRate: 3,
+      propertyType: 'existing',
+      bedroomCount: 3,
+      hasBuilderReport: false,
     },
   });
 
@@ -98,17 +101,21 @@ const MusharakaCalculator: React.FC = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between">
               {[1, 2, 3, 4].map((step) => (
-                <div key={step} className="flex-1">
-                  <div className="relative">
-                    {step < 4 && (
-                      <div 
-                        className={`absolute left-1/2 top-1/2 w-full h-0.5 -translate-y-1/2 translate-x-4 ${
-                          step < currentStep ? 'bg-emerald-600' : 'bg-gray-200'
-                        }`}
-                      />
-                    )}
+                <div key={step} className="flex-1 relative">
+                  {/* Connecting lines between circles */}
+                  {step < 4 && (
                     <div 
-                      className={`relative w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
+                      className={`absolute top-4 left-0 right-0 h-0.5 z-0 ${
+                        step < currentStep ? 'bg-emerald-600' : 'bg-gray-200'
+                      }`}
+                      style={{ width: 'calc(100% - 16px)', left: '50%', transform: 'translateX(-25%)' }}
+                    />
+                  )}
+                  
+                  {/* Step circle with number */}
+                  <div className="flex flex-col items-center relative z-10">
+                    <div 
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
                         step < currentStep 
                           ? 'border-emerald-600 bg-emerald-600 text-white' 
                           : step === currentStep 
@@ -118,12 +125,12 @@ const MusharakaCalculator: React.FC = () => {
                     >
                       {step}
                     </div>
-                  </div>
-                  <div className="text-center mt-2 text-sm font-medium text-gray-600">
-                    {step === 1 && 'Your Goals'}
-                    {step === 2 && 'Your Finances'}
-                    {step === 3 && 'Property Details'}
-                    {step === 4 && 'Payment Plan'}
+                    <div className="text-center mt-2 text-xs sm:text-sm font-medium text-gray-600">
+                      {step === 1 && 'Your Goals'}
+                      {step === 2 && 'Your Finances'}
+                      {step === 3 && 'Property Details'}
+                      {step === 4 && 'Payment Plan'}
+                    </div>
                   </div>
                 </div>
               ))}

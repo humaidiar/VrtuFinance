@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { HelpCircle, Home } from 'lucide-react';
+import { HelpCircle, Home, AlertCircle } from 'lucide-react';
 import { 
   FormControl, 
   FormField, 
@@ -15,6 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { type CalculatorFormData } from '@shared/schema';
 
 interface StepThreeProps {
@@ -28,8 +30,14 @@ const propertyTypes = [
 ];
 
 const StepThree: React.FC<StepThreeProps> = ({ form }) => {
+  const [showDepositWarning, setShowDepositWarning] = useState(false);
+  const [showFinancingCapacityWarning, setShowFinancingCapacityWarning] = useState(false);
+  
   const watchPropertyPrice = form.watch('propertyPrice');
   const watchDepositAmount = form.watch('depositAmount');
+  const watchIncome = form.watch('income');
+  const watchExpenses = form.watch('expenses');
+  const watchCommitments = form.watch('commitments');
   
   // Calculate ownership percentage
   const initialOwnershipPercentage = watchPropertyPrice && watchDepositAmount
@@ -40,6 +48,31 @@ const StepThree: React.FC<StepThreeProps> = ({ form }) => {
   const lvrRatio = watchPropertyPrice && watchDepositAmount
     ? ((watchPropertyPrice - watchDepositAmount) / watchPropertyPrice) * 100
     : 0;
+    
+  // Calculate financial health indicators for validation
+  const monthlyIncome = watchIncome ? watchIncome / 12 : 0;
+  const availableForFinancing = monthlyIncome - (watchExpenses || 0) - ((watchCommitments || 0) / 12);
+  const financingCapacity = availableForFinancing * 300; // Rough estimate
+  
+  // Check if property price exceeds financing capacity
+  useEffect(() => {
+    if (watchPropertyPrice > financingCapacity && financingCapacity > 0) {
+      setShowFinancingCapacityWarning(true);
+    } else {
+      setShowFinancingCapacityWarning(false);
+    }
+  }, [watchPropertyPrice, financingCapacity]);
+
+  // Validate deposit amount - must be at least 25% of property price
+  useEffect(() => {
+    if (watchPropertyPrice && watchDepositAmount) {
+      if (watchDepositAmount < watchPropertyPrice * 0.25) {
+        setShowDepositWarning(true);
+      } else {
+        setShowDepositWarning(false);
+      }
+    }
+  }, [watchDepositAmount, watchPropertyPrice]);
 
   // Make sure deposit amount cannot exceed property price
   useEffect(() => {

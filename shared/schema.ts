@@ -28,6 +28,8 @@ export const calculatorFormSchema = z.object({
   depositAmount: z.number().min(0, "Deposit amount must be a positive number"),
   term: z.number().int().min(5).max(30).default(25),
   propertyType: z.enum(["existing", "new-construction", "apartment"]).optional(),
+  bedroomCount: z.number().int().min(1).max(10).default(3).optional(),
+  hasBuilderReport: z.boolean().default(false).optional(),
   appreciationRate: z.number().min(0).max(10).default(3).optional(),
 });
 
