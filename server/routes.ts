@@ -65,7 +65,10 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     propertyPrice,
     depositAmount,
     term,
-    appreciationRate = 3
+    appreciationRate = 3,
+    propertyType = 'existing',
+    bedroomCount = 3,
+    hasBuilderReport = false
   } = formData;
 
   // Calculate initial ownership percentage
@@ -74,8 +77,31 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
   // Calculate financed amount (Vrtu's share)
   const financedAmount = propertyPrice - depositAmount;
   
-  // Add markup to Vrtu's share (30% markup is standard for this example)
-  const markup = 1.3; // 30% markup
+  // Base markup (profit rate)
+  let markup = 1.3; // 30% markup as default
+  
+  // Adjust markup based on property type and other factors
+  if (propertyType === 'apartment') {
+    markup += 0.02; // Higher risk for apartments
+  } else if (propertyType === 'new-construction') {
+    markup -= 0.02; // Lower risk for new construction
+  }
+  
+  // Adjust markup based on bedroom count (family homes may be more stable investments)
+  if (bedroomCount >= 3 && bedroomCount <= 4) {
+    markup -= 0.01; // Slight reduction for family-sized homes (3-4 bedrooms)
+  } else if (bedroomCount > 4) {
+    markup += 0.01; // Slight increase for very large homes (may be harder to sell)
+  }
+  
+  // Adjust markup based on builder's report
+  if (hasBuilderReport) {
+    markup -= 0.02; // Reduced risk with verified property condition
+  }
+  
+  // Ensure the markup stays within reasonable bounds
+  markup = Math.max(1.2, Math.min(1.4, markup));
+  
   const vrtuShareWithMarkup = financedAmount * markup;
   
   // Calculate monthly acquisition payment (to purchase Vrtu's share)
@@ -144,5 +170,14 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     totalRentPaid,
     totalSharesPurchased,
     yearlyBreakdown,
+    propertyDetails: {
+      propertyType,
+      bedroomCount,
+      hasBuilderReport,
+      propertyPrice,
+      depositAmount,
+      appliedMarkup: markup,
+      appreciationRate
+    }
   };
 }

@@ -124,11 +124,17 @@ const StepThree: React.FC<StepThreeProps> = ({ form }) => {
                       {...field}
                       type="number"
                       onChange={(e) => field.onChange(Number(e.target.value))}
-                      className="pl-8"
+                      className={`pl-8 ${showFinancingCapacityWarning ? 'border-red-500' : ''}`}
                       placeholder="800,000"
                     />
                   </div>
                 </FormControl>
+                {showFinancingCapacityWarning && (
+                  <div className="mt-2 text-sm text-red-500 flex items-start">
+                    <AlertCircle className="h-4 w-4 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>The property price exceeds your estimated financing capacity of {formatCurrency(financingCapacity)}. This may affect approval.</span>
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -146,7 +152,7 @@ const StepThree: React.FC<StepThreeProps> = ({ form }) => {
                       <HelpCircle className="h-4 w-4 text-gray-400" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      This is your share of the property at the start. The higher your initial contribution, the less you'll pay in rent and the faster you'll achieve full ownership.
+                      This is your share of the property at the start. The minimum deposit required is 25% of the property price. The higher your initial contribution, the less you'll pay in rent and the faster you'll achieve full ownership.
                     </TooltipContent>
                   </Tooltip>
                 </FormLabel>
@@ -157,11 +163,20 @@ const StepThree: React.FC<StepThreeProps> = ({ form }) => {
                       {...field}
                       type="number"
                       onChange={(e) => field.onChange(Number(e.target.value))}
-                      className="pl-8"
+                      className={`pl-8 ${showDepositWarning ? 'border-red-500' : ''}`}
                       placeholder="200,000"
                     />
                   </div>
                 </FormControl>
+                {showDepositWarning && (
+                  <div className="mt-2 text-sm text-red-500 flex items-start">
+                    <AlertCircle className="h-4 w-4 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>Minimum deposit must be at least 25% of the property price (${(watchPropertyPrice * 0.25).toLocaleString()})</span>
+                  </div>
+                )}
+                <FormDescription>
+                  Required minimum: 25% of property price
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -226,6 +241,67 @@ const StepThree: React.FC<StepThreeProps> = ({ form }) => {
                 </Select>
                 <FormDescription>This helps us estimate additional costs</FormDescription>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="bedroomCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-1">
+                  How many bedrooms?
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-4 w-4 text-gray-400" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      The number of bedrooms helps us understand the property size and type.
+                    </TooltipContent>
+                  </Tooltip>
+                </FormLabel>
+                <Select 
+                  onValueChange={(value) => field.onChange(Number(value))} 
+                  defaultValue={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select number of bedrooms" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[1,2,3,4,5,6].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num} {num === 1 ? 'bedroom' : 'bedrooms'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="hasBuilderReport"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    Has this property been deemed good by a builder's report?
+                  </FormLabel>
+                  <FormDescription>
+                    A builder's report is important for ensuring the property is in good condition and identifying any potential issues.
+                  </FormDescription>
+                </div>
               </FormItem>
             )}
           />
