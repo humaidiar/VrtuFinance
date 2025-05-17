@@ -98,7 +98,7 @@ const MusharakaCalculator: React.FC = () => {
           </header>
 
           {/* Stepper */}
-          <div className="mb-16 px-4">
+          <div className="mb-28 px-8">
             <div className="relative flex items-center justify-between">
               {/* Connecting lines */}
               <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>

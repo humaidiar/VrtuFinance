@@ -27,13 +27,11 @@ const Hero: React.FC = () => {
             <p className="text-gray-600 mb-4">
               A true partnership where you and Vrtu own portions of your home, with your ownership increasing over time.
             </p>
-            <Link href="/how-it-works">
-              <a className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center">
-                Learn more 
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
+            <Link href="/how-it-works" className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center">
+              Learn more 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
           
@@ -42,13 +40,11 @@ const Hero: React.FC = () => {
             <p className="text-gray-600 mb-4">
               Our unique home financing solutions are specially designed to meet the needs of everyday New Zealanders.
             </p>
-            <Link href="/calculator">
-              <a className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center">
-                Explore options
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
+            <Link href="/calculator" className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center">
+              Explore options
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
         </div>
