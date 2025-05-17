@@ -112,23 +112,54 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
   
   // Generate yearly breakdown data
   const yearlyBreakdown = [];
-  let customerOwnership = initialOwnershipPercentage / 100;
-  let remainingProviderShare = vrtuShareWithMarkup;
   let totalRentPaid = 0;
   let totalSharesPurchased = 0;
   let fullOwnershipYears = term;
   
-  for (let year = 0; year <= term; year++) {
-    // Calculate rent based on remaining provider share and customer ownership
-    const yearlyRental = (remainingProviderShare * annualRentalRate) * (1 - customerOwnership);
-    const weeklyRental = yearlyRental / 52;
-    
+  // Calculate initial values
+  const initialCustomerShare = depositAmount;
+  const initialProviderShare = financedAmount;
+  const totalPropertyValue = propertyPrice;
+  let customerOwnership = initialOwnershipPercentage / 100;
+  let remainingProviderShare = vrtuShareWithMarkup;
+  
+  // Add year 0 (starting point)
+  yearlyBreakdown.push({
+    year: 0,
+    customerOwnershipPercentage: initialOwnershipPercentage,
+    weeklyPayment: 0,
+    rentComponent: 0,
+    shareComponent: 0,
+    remainingProviderShare: vrtuShareWithMarkup,
+  });
+  
+  // Calculate for remaining years
+  for (let year = 1; year <= term; year++) {
     // Acquisition payment is fixed
     const yearlyAcquisition = monthlyAcquisition * 12;
     const weeklyAcquisition = yearlyAcquisition / 52;
     
+    // Calculate rent based on remaining provider share and current ownership percentage
+    const yearlyRental = remainingProviderShare * annualRentalRate;
+    const weeklyRental = yearlyRental / 52;
+    
     // Total weekly payment
     const weeklyPayment = weeklyRental + weeklyAcquisition;
+    
+    // Update provider share for this year (after previous year's payment)
+    remainingProviderShare -= yearlyAcquisition;
+    
+    // Ensure non-negative values
+    if (remainingProviderShare <= 0) {
+      remainingProviderShare = 0;
+      customerOwnership = 1;
+      if (fullOwnershipYears === term) {
+        fullOwnershipYears = year;
+      }
+    } else {
+      // Update ownership percentage based on original financedAmount value
+      customerOwnership = 1 - (remainingProviderShare / vrtuShareWithMarkup);
+    }
     
     yearlyBreakdown.push({
       year,
@@ -142,21 +173,6 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     // Update totals
     totalRentPaid += yearlyRental;
     totalSharesPurchased += yearlyAcquisition;
-    
-    // Update provider share and customer ownership for next year
-    remainingProviderShare -= yearlyAcquisition;
-    
-    // If no more provider share, we've reached full ownership
-    if (remainingProviderShare <= 0) {
-      remainingProviderShare = 0;
-      customerOwnership = 1;
-      if (fullOwnershipYears === term) {
-        fullOwnershipYears = year;
-      }
-    } else {
-      // Otherwise, recalculate ownership percentage
-      customerOwnership = 1 - (remainingProviderShare / vrtuShareWithMarkup);
-    }
   }
   
   // Calculate monthly payment (total of both components)

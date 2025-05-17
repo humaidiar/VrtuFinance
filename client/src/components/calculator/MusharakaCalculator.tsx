@@ -160,7 +160,7 @@ const MusharakaCalculator: React.FC = () => {
                   currentStep === 1 ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-gray-800'
                 }`}
               >
-                PREV
+                Back
               </Button>
               
               <Button
@@ -177,7 +177,7 @@ const MusharakaCalculator: React.FC = () => {
                 {isCalculating ? (
                   <span className="animate-spin">...</span>
                 ) : (
-                  currentStep < 4 ? 'NEXT' : 'CALCULATE'
+                  currentStep < 4 ? 'Continue' : 'Get Full Projection'
                 )}
               </Button>
             </div>
