@@ -99,46 +99,86 @@ const MusharakaCalculator: React.FC = () => {
 
           {/* Stepper */}
           <div className="mb-10 px-4">
-            <div className="relative flex items-center justify-between">
-              {/* Connecting lines */}
-              <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>
-              
-              {/* Steps */}
-              {[
-                { number: 1, title: 'Step 1', description: 'Your Goals', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> },
-                { number: 2, title: 'Step 2', description: 'Your Finances', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
-                { number: 3, title: 'Step 3', description: 'Property Details', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
-                { number: 4, title: 'Step 4', description: 'Payment Plan', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> }
-              ].map((step) => (
-                <div key={step.number} className="relative z-10 flex flex-col items-center">
-                  <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      step.number < currentStep 
-                        ? 'bg-emerald-700 text-white' 
-                        : step.number === currentStep 
-                        ? 'bg-emerald-800 text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
-                    onClick={() => step.number < currentStep && setCurrentStep(step.number)}
-                    style={{ cursor: step.number < currentStep ? 'pointer' : 'default' }}
-                  >
-                    {step.icon}
-                  </div>
-                  
-                  <div className="mt-2 text-center">
-                    <p className={`font-semibold text-sm ${
-                      step.number === currentStep ? 'text-gray-800' : 'text-gray-500'
+            <div className="border rounded-lg">
+              <div className="flex">
+                {/* Step 1 */}
+                <div className={`flex-1 border-r p-4 ${currentStep === 1 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <div className="flex gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
+                      currentStep > 1 ? 'bg-indigo-600' : currentStep === 1 ? 'bg-indigo-600' : 'bg-gray-300'
                     }`}>
-                      {step.title}
-                    </p>
-                    <p className={`font-normal text-xs ${
-                      step.number === currentStep ? 'text-gray-700' : 'text-gray-400'
-                    }`}>
-                      {step.description}
-                    </p>
+                      {currentStep > 1 ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span>01</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm">Your Goals</h3>
+                      <p className="text-gray-500 text-sm">Vitae sed mi luctus laoreet.</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+
+                {/* Step 2 */}
+                <div className={`flex-1 border-r p-4 ${currentStep === 2 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <div className="flex gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      currentStep > 2 ? 'bg-indigo-600 text-white' : currentStep === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {currentStep > 2 ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span>02</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm">Your Finances</h3>
+                      <p className="text-gray-500 text-sm">Cursus semper viverra.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className={`flex-1 border-r p-4 ${currentStep === 3 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <div className="flex gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      currentStep > 3 ? 'bg-indigo-600 text-white' : currentStep === 3 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {currentStep > 3 ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span>03</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm">Property Details</h3>
+                      <p className="text-gray-500 text-sm">Penatibus eu quis ante.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 4 */}
+                <div className={`flex-1 p-4 ${currentStep === 4 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <div className="flex gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      currentStep > 4 ? 'bg-indigo-600 text-white' : currentStep === 4 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      <span>04</span>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm">Payment Plan</h3>
+                      <p className="text-gray-500 text-sm">Tempus semper viverra.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
