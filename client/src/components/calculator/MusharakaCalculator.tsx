@@ -97,40 +97,45 @@ const MusharakaCalculator: React.FC = () => {
             </p>
           </header>
 
-          {/* Progress Bar */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between">
-              {[1, 2, 3, 4].map((step) => (
-                <div key={step} className="flex-1 relative">
-                  {/* Connecting lines between circles */}
-                  {step < 4 && (
-                    <div 
-                      className={`absolute top-4 left-0 right-0 h-0.5 z-0 ${
-                        step < currentStep ? 'bg-emerald-600' : 'bg-gray-200'
-                      }`}
-                      style={{ width: 'calc(100% - 16px)', left: '50%', transform: 'translateX(-25%)' }}
-                    />
-                  )}
+          {/* Stepper */}
+          <div className="mb-16 px-4">
+            <div className="relative flex items-center justify-between">
+              {/* Connecting lines */}
+              <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>
+              
+              {/* Steps */}
+              {[
+                { number: 1, title: 'Step 1', description: 'Your Goals', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> },
+                { number: 2, title: 'Step 2', description: 'Your Finances', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+                { number: 3, title: 'Step 3', description: 'Property Details', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
+                { number: 4, title: 'Step 4', description: 'Payment Plan', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> }
+              ].map((step) => (
+                <div key={step.number} className="relative z-10 flex flex-col items-center">
+                  <div 
+                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      step.number < currentStep 
+                        ? 'bg-emerald-700 text-white' 
+                        : step.number === currentStep 
+                        ? 'bg-emerald-800 text-white'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
+                    onClick={() => step.number < currentStep && setCurrentStep(step.number)}
+                    style={{ cursor: step.number < currentStep ? 'pointer' : 'default' }}
+                  >
+                    {step.icon}
+                  </div>
                   
-                  {/* Step circle with number */}
-                  <div className="flex flex-col items-center relative z-10">
-                    <div 
-                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
-                        step < currentStep 
-                          ? 'border-emerald-600 bg-emerald-600 text-white' 
-                          : step === currentStep 
-                          ? 'border-emerald-600 text-emerald-600' 
-                          : 'border-gray-300 text-gray-300'
-                      }`}
-                    >
-                      {step}
-                    </div>
-                    <div className="text-center mt-2 text-xs sm:text-sm font-medium text-gray-600">
-                      {step === 1 && 'Your Goals'}
-                      {step === 2 && 'Your Finances'}
-                      {step === 3 && 'Property Details'}
-                      {step === 4 && 'Payment Plan'}
-                    </div>
+                  <div className="absolute -bottom-[4.5rem] w-max text-center">
+                    <p className={`font-semibold text-base ${
+                      step.number === currentStep ? 'text-gray-800' : 'text-gray-500'
+                    }`}>
+                      {step.title}
+                    </p>
+                    <p className={`font-normal ${
+                      step.number === currentStep ? 'text-gray-700' : 'text-gray-400'
+                    }`}>
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -145,17 +150,17 @@ const MusharakaCalculator: React.FC = () => {
             {currentStep === 4 && <StepFour form={form} calculationResult={calculationResult} />}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between mt-12">
+            <div className="flex justify-between mt-16">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className={`text-emerald-700 border-emerald-700 hover:bg-emerald-50 ${
-                  currentStep === 1 ? 'opacity-50 cursor-not-allowed' : ''
+                className={`px-8 py-2.5 font-medium border-2 ${
+                  currentStep === 1 ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-gray-800'
                 }`}
               >
-                Back
+                PREV
               </Button>
               
               <Button
@@ -167,13 +172,12 @@ const MusharakaCalculator: React.FC = () => {
                   (currentStep === 3 && !isStepThreeComplete) ||
                   isCalculating
                 }
-                className="bg-emerald-700 hover:bg-emerald-800 text-white"
+                className={`px-8 py-2.5 font-medium ${currentStep < 4 ? 'bg-gray-900 hover:bg-gray-800' : 'bg-emerald-700 hover:bg-emerald-800'} text-white`}
               >
-                {currentStep < 4 ? 'Continue' : 'Get Your Full Projection'}
                 {isCalculating ? (
-                  <span className="ml-2 animate-spin">...</span>
+                  <span className="animate-spin">...</span>
                 ) : (
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  currentStep < 4 ? 'NEXT' : 'CALCULATE'
                 )}
               </Button>
             </div>
