@@ -98,7 +98,7 @@ const MusharakaCalculator: React.FC = () => {
           </header>
 
           {/* Stepper */}
-          <div className="mb-16 px-4">
+          <div className="mb-10 px-4">
             <div className="relative flex items-center justify-between">
               {/* Connecting lines */}
               <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>
@@ -112,7 +112,7 @@ const MusharakaCalculator: React.FC = () => {
               ].map((step) => (
                 <div key={step.number} className="relative z-10 flex flex-col items-center">
                   <div 
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       step.number < currentStep 
                         ? 'bg-emerald-700 text-white' 
                         : step.number === currentStep 
@@ -125,13 +125,13 @@ const MusharakaCalculator: React.FC = () => {
                     {step.icon}
                   </div>
                   
-                  <div className="absolute -bottom-[4.5rem] w-max text-center">
-                    <p className={`font-semibold text-base ${
+                  <div className="mt-2 text-center">
+                    <p className={`font-semibold text-sm ${
                       step.number === currentStep ? 'text-gray-800' : 'text-gray-500'
                     }`}>
                       {step.title}
                     </p>
-                    <p className={`font-normal ${
+                    <p className={`font-normal text-xs ${
                       step.number === currentStep ? 'text-gray-700' : 'text-gray-400'
                     }`}>
                       {step.description}
