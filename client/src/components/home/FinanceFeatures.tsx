@@ -37,13 +37,11 @@ const FinanceFeatures: React.FC = () => {
           </div>
           <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
           <p className="text-gray-600">{feature.description}</p>
-          <Link href={feature.link}>
-            <a className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center mt-4">
-              {feature.linkText}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+          <Link href={feature.link} className="text-emerald-700 font-medium hover:text-emerald-800 inline-flex items-center mt-4">
+            {feature.linkText}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
         </div>
       ))}

@@ -92,42 +92,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ form }) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="savings"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-1">
-                  How much have you saved for your initial contribution?
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <HelpCircle className="h-4 w-4 text-gray-400" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      This will determine your initial ownership percentage. A larger contribution means you'll own more of the property from the start and pay less in rent.
-                    </TooltipContent>
-                  </Tooltip>
-                </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                    <Input
-                      {...field}
-                      type="number"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                      className="pl-8"
-                      placeholder="200,000"
-                    />
-                  </div>
-                </FormControl>
-                <FormDescription>This will determine your initial ownership percentage</FormDescription>
-                <div className="bg-emerald-50 border border-emerald-100 p-3 rounded mt-2 text-sm text-emerald-800">
-                  Shariah-compliant financing typically requires a minimum initial contribution. A larger contribution means you'll own more of the property from the start and pay less in rent.
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
 
           <FormField
             control={form.control}
@@ -188,11 +153,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ form }) => {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Monthly Income</p>
-                <p className="font-medium">{formatCurrency(monthlyIncome)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Available for Financing</p>
+                <p className="text-sm text-gray-500">Monthly Available for Financing</p>
                 <p className="font-medium">{formatCurrency(availableForFinancing)}</p>
               </div>
               <div>
@@ -212,12 +173,6 @@ const StepTwo: React.FC<StepTwoProps> = ({ form }) => {
                     affordabilityScore === 'medium' ? 'Moderate' : 'Limited'}
                 </Badge>
               </div>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Recommended Property Price Range</p>
-              <p className="font-medium">
-                {formatCurrency(financingCapacity * 0.8)} - {formatCurrency(financingCapacity * 1.2)}
-              </p>
             </div>
           </CardContent>
         </Card>
