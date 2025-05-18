@@ -16,7 +16,6 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  Cell,
 } from 'recharts';
 import {
   Table,
@@ -87,56 +86,6 @@ const FullProjection: React.FC<FullProjectionProps> = ({ result, formData, onBac
     };
   });
 
-  // Calculate conventional mortgage for comparison
-  const conventionalMortgageData = chartData.map((entry, index) => {
-    // Assuming 5% interest rate on conventional mortgage
-    const principal = formData.propertyPrice - formData.depositAmount;
-    const interestRate = 0.05;
-    const monthlyRate = interestRate / 12;
-    const numPayments = formData.term * 12;
-    const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -numPayments));
-    
-    const yearlyPayment = monthlyPayment * 12;
-    const cumulativePayment = yearlyPayment * (index + 1);
-    
-    // Calculate how much would be interest vs principal at this point
-    let remainingPrincipal = principal;
-    let totalInterest = 0;
-    let totalPrincipal = 0;
-    
-    for (let i = 0; i < (index + 1) * 12; i++) {
-      const interestPayment = remainingPrincipal * monthlyRate;
-      const principalPayment = monthlyPayment - interestPayment;
-      
-      totalInterest += interestPayment;
-      totalPrincipal += principalPayment;
-      remainingPrincipal -= principalPayment;
-      
-      if (remainingPrincipal <= 0) break;
-    }
-    
-    return {
-      name: entry.name,
-      totalPayment: cumulativePayment,
-      principal: totalPrincipal,
-      interest: totalInterest,
-      remaining: Math.max(0, remainingPrincipal),
-    };
-  });
-
-  // Prepare comparison data
-  const comparisonData = chartData.map((entry, index) => {
-    const musharakaTotal = cumulativeData[index].total;
-    const conventionalTotal = conventionalMortgageData[index].totalPayment;
-    
-    return {
-      name: entry.name,
-      musharaka: musharakaTotal,
-      conventional: conventionalTotal,
-      savings: conventionalTotal - musharakaTotal,
-    };
-  });
-
   // Download PDF report (mock function for now)
   const downloadReport = () => {
     alert('Download report functionality would be implemented here');
@@ -185,7 +134,7 @@ const FullProjection: React.FC<FullProjectionProps> = ({ result, formData, onBac
           Your Diminishing Musharaka Projection
         </h1>
         <p className="text-gray-600">
-          Detailed breakdown of your Shariah-compliant home financing journey over {formData.term} years.
+          Detailed breakdown of your Shariah-compliant home financing journey over {result.fullOwnershipYears} years.
         </p>
       </div>
 
@@ -398,103 +347,123 @@ const FullProjection: React.FC<FullProjectionProps> = ({ result, formData, onBac
 
         {/* Comparison Tab */}
         <TabsContent value="comparison" className="space-y-8">
-          {/* Comparison with Conventional Mortgage */}
-          <Card>
+          {/* Use our new CostComparisonChart component */}
+          <div className="mb-6">
+            <p className="text-lg font-medium text-emerald-800 mb-2">Diminishing Musharaka vs Conventional Mortgage</p>
+            <p className="text-gray-600">
+              See how our Shariah-compliant financing option saves you significant money compared to conventional interest-based mortgages.
+            </p>
+          </div>
+          
+          {/* Use our new chart component that displays the server-calculated data */}
+          {result.costComparison && (
+            <CostComparisonChart result={result} />
+          )}
+          
+          {/* Detailed comparison cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <Card className="border-emerald-100">
+              <CardHeader className="bg-emerald-50 rounded-t-lg">
+                <CardTitle className="text-emerald-800">Diminishing Musharaka Benefits</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Monthly Payment</span>
+                    <span className="font-medium">{formatCurrency(result.monthlyPayment)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Initial Ownership</span>
+                    <span className="font-medium">{formatPercent(result.initialOwnershipPercentage)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Full Ownership In</span>
+                    <span className="font-medium">{result.fullOwnershipYears} years</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Annual Additional Payment</span>
+                    <span className="font-medium">{formatCurrency(formData.additionalSharePayment || 0)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Deposit Amount</span>
+                    <span className="font-medium">{formatCurrency(formData.depositAmount)}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold text-emerald-700">
+                    <span>Total Cost Savings</span>
+                    <span>{formatCurrency(result.totalSavings)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-gray-200">
+              <CardHeader className="bg-gray-50 rounded-t-lg">
+                <CardTitle className="text-gray-800">Conventional Mortgage Costs</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Monthly Payment</span>
+                    <span className="font-medium">{formatCurrency(result.conventionalMonthlyPayment)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Interest Rate</span>
+                    <span className="font-medium">7.0%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Loan Term</span>
+                    <span className="font-medium">{result.fullOwnershipYears} years</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Down Payment</span>
+                    <span className="font-medium">{formatCurrency(formData.depositAmount)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Loan Amount</span>
+                    <span className="font-medium">{formatCurrency(formData.propertyPrice - formData.depositAmount)}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold text-red-600">
+                    <span>Extra Interest Cost</span>
+                    <span>{formatCurrency(result.totalSavings)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Key Benefits Section */}
+          <Card className="bg-emerald-50 border-emerald-100 mt-6">
             <CardHeader>
-              <CardTitle>Cumulative Cost Comparison</CardTitle>
+              <CardTitle>Why Choose Diminishing Musharaka?</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={comparisonData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => formatCurrency(value)} />
-                    <Tooltip 
-                      formatter={(value) => [formatCurrency(value as number)]}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="musharaka"
-                      name="Diminishing Musharaka"
-                      stroke="#10B981"
-                      strokeWidth={2}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="conventional"
-                      name="Conventional Mortgage"
-                      stroke="#EF4444"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="mt-8 p-4 bg-emerald-50 rounded-lg">
-                <h4 className="font-medium text-emerald-800 mb-2">Cost Savings with Diminishing Musharaka</h4>
-                <p className="text-emerald-700">
-                  Over {formData.term} years, you could save approximately {formatCurrency(comparisonData[comparisonData.length - 1]?.savings || 0)} compared to a conventional mortgage at current interest rates.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Interest vs Rent Comparison */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Interest vs. Rent + Markup Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={conventionalMortgageData.filter((_, i) => i % 5 === 0 || i === conventionalMortgageData.length - 1)}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => formatCurrency(value)} />
-                    <Tooltip 
-                      formatter={(value) => [formatCurrency(value as number)]}
-                    />
-                    <Legend />
-                    <Bar 
-                      dataKey="interest" 
-                      name="Interest (Conventional)" 
-                      fill="#EF4444" 
-                    />
-                    <Bar 
-                      dataKey="principal" 
-                      name="Principal (Conventional)" 
-                      fill="#F59E0B" 
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="mt-6">
-                <h4 className="font-medium mb-2">Key Differences</h4>
-                <ul className="space-y-2 ml-5 list-disc text-sm text-gray-700">
-                  <li>With conventional mortgages, early payments are mostly interest rather than building equity</li>
-                  <li>Diminishing Musharaka gives you real ownership from day one, with each payment increasing your share</li>
-                  <li>Interest payments are replaced with rent (which decreases as your ownership increases) and a markup on Vrtu's share</li>
-                  <li>The markup is a fixed amount, not compound interest that grows over time</li>
-                </ul>
-              </div>
+              <ul className="space-y-3 ml-6 list-disc">
+                <li className="text-emerald-800">
+                  <span className="font-medium">No Interest Payments:</span> 
+                  <span className="text-gray-700"> Unlike conventional mortgages which are based on interest, our financing follows Shariah principles.</span>
+                </li>
+                <li className="text-emerald-800">
+                  <span className="font-medium">Transparent Co-Ownership:</span> 
+                  <span className="text-gray-700"> You and Vrtu co-own the property, with your ownership increasing over time.</span>
+                </li>
+                <li className="text-emerald-800">
+                  <span className="font-medium">Flexibility to Increase Ownership:</span> 
+                  <span className="text-gray-700"> Make additional payments to increase your ownership faster and reduce total costs.</span>
+                </li>
+                <li className="text-emerald-800">
+                  <span className="font-medium">Significant Cost Savings:</span> 
+                  <span className="text-gray-700"> Save approximately {formatCurrency(result.totalSavings)} over the financing term compared to a conventional mortgage.</span>
+                </li>
+              </ul>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Table Tab */}
-        <TabsContent value="table">
+        <TabsContent value="table" className="space-y-8">
           <Card>
             <CardHeader>
-              <CardTitle>Year-by-Year Breakdown</CardTitle>
+              <CardTitle>Yearly Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -505,14 +474,14 @@ const FullProjection: React.FC<FullProjectionProps> = ({ result, formData, onBac
                       <TableHead>Ownership %</TableHead>
                       <TableHead>Weekly Payment</TableHead>
                       <TableHead>Rent Component</TableHead>
-                      <TableHead>Acquisition Component</TableHead>
+                      <TableHead>Share Component</TableHead>
                       <TableHead>Remaining Provider Share</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {result.yearlyBreakdown.map((year) => (
                       <TableRow key={year.year}>
-                        <TableCell>{year.year}</TableCell>
+                        <TableCell className="font-medium">{year.year}</TableCell>
                         <TableCell>{formatPercent(year.customerOwnershipPercentage)}</TableCell>
                         <TableCell>{formatCurrencyDecimal(year.weeklyPayment)}</TableCell>
                         <TableCell>{formatCurrencyDecimal(year.rentComponent)}</TableCell>
@@ -525,49 +494,49 @@ const FullProjection: React.FC<FullProjectionProps> = ({ result, formData, onBac
               </div>
             </CardContent>
           </Card>
+          
+          {/* Property Details */}
+          {result.propertyDetails && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Property Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Property Type</span>
+                      <span className="font-medium capitalize">{result.propertyDetails.propertyType.replace('-', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Bedrooms</span>
+                      <span className="font-medium">{result.propertyDetails.bedroomCount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Builder's Report</span>
+                      <span className="font-medium">{result.propertyDetails.hasBuilderReport ? 'Yes' : 'No'}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Property Price</span>
+                      <span className="font-medium">{formatCurrency(result.propertyDetails.propertyPrice)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Deposit Amount</span>
+                      <span className="font-medium">{formatCurrency(result.propertyDetails.depositAmount)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Applied Markup</span>
+                      <span className="font-medium">{result.propertyDetails.appliedMarkup.toFixed(2)}x</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
-
-      {/* Educational Section */}
-      <div className="mt-12 bg-gray-50 p-6 rounded-lg">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Understanding Diminishing Musharaka</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h3 className="font-medium text-gray-800 mb-2">How It Works</h3>
-            <p className="text-gray-600 text-sm">
-              Diminishing Musharaka is a Shariah-compliant home financing method based on a partnership between you and Vrtu. You both purchase the property together, with your initial contribution determining your starting ownership percentage. Over time, you buy Vrtu's share while paying rent for the portion you don't yet own.
-            </p>
-            <div className="mt-4">
-              <h4 className="font-medium text-gray-800 mb-1">Key Components:</h4>
-              <ul className="space-y-1 ml-5 list-disc text-sm text-gray-600">
-                <li><span className="font-medium">Initial Contribution:</span> Your deposit that determines your starting ownership</li>
-                <li><span className="font-medium">Rent Payment:</span> Payment for using Vrtu's share of the property</li>
-                <li><span className="font-medium">Acquisition Payment:</span> Amount paid to gradually purchase Vrtu's share</li>
-                <li><span className="font-medium">Ownership Increase:</span> Your ownership percentage grows with each payment</li>
-              </ul>
-            </div>
-          </div>
-          <div>
-            <h3 className="font-medium text-gray-800 mb-2">Shariah Compliance</h3>
-            <p className="text-gray-600 text-sm">
-              Unlike conventional interest-based mortgages (which involve riba/interest), Diminishing Musharaka is based on a real partnership structure. The arrangement has been approved by respected Shariah scholars as it:
-            </p>
-            <ul className="space-y-1 mt-2 ml-5 list-disc text-sm text-gray-600">
-              <li>Creates a genuine co-ownership arrangement</li>
-              <li>Separates the rent payment from the acquisition payment</li>
-              <li>Establishes a transparent fixed markup rather than compound interest</li>
-              <li>Shares the risks and rewards of property ownership</li>
-              <li>Follows clear guidelines on permissible transactions in Islamic finance</li>
-            </ul>
-            <div className="mt-4 text-sm text-gray-500">
-              <p>
-                <Info className="inline h-4 w-4 mr-1" /> 
-                Our financing structure is certified by [Shariah Board Name] to ensure full compliance with Islamic financial principles.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
