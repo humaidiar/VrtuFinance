@@ -26,6 +26,7 @@ export const calculatorFormSchema = z.object({
   commitments: z.number().min(0, "Commitments must be a positive number"),
   propertyPrice: z.number().min(0, "Property price must be a positive number"),
   depositAmount: z.number().min(0, "Deposit amount must be a positive number"),
+  additionalSharePayment: z.number().min(0, "Additional share payment must be a positive number").default(0),
   term: z.number().int().min(5).max(30).default(25),
   propertyType: z.enum(["existing", "new-construction", "apartment"]).optional(),
   bedroomCount: z.number().int().min(1).max(10).default(3).optional(),

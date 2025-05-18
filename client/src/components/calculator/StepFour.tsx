@@ -80,46 +80,90 @@ const StepFour: React.FC<StepFourProps> = ({ form, calculationResult }) => {
       </div>
 
       <Form {...form}>
-        <FormField
-          control={form.control}
-          name="term"
-          render={({ field }) => (
-            <FormItem className="space-y-4">
-              <FormLabel>Financing Term</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={(value) => field.onChange(parseInt(value))}
-                  defaultValue={field.value.toString()}
-                  className="grid grid-cols-2 gap-4"
-                >
-                  {terms.map((term) => (
-                    <FormItem key={term.value} className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem 
-                          value={term.value.toString()}
-                          id={`term-${term.value}`}
-                          className="sr-only"
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="term"
+            render={({ field }) => (
+              <FormItem className="space-y-4">
+                <FormLabel>Financing Term</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={(value) => field.onChange(parseInt(value))}
+                    defaultValue={field.value.toString()}
+                    className="grid grid-cols-2 gap-4"
+                  >
+                    {terms.map((term) => (
+                      <FormItem key={term.value} className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem 
+                            value={term.value.toString()}
+                            id={`term-${term.value}`}
+                            className="sr-only"
+                          />
+                        </FormControl>
+                        <label
+                          htmlFor={`term-${term.value}`}
+                          className={`
+                            flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all w-full text-center
+                            ${field.value === term.value 
+                              ? 'border-emerald-600 bg-emerald-50 text-emerald-700' 
+                              : 'border-gray-200 hover:border-emerald-200 text-gray-700'}
+                          `}
+                        >
+                          {term.label}
+                        </label>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="additionalSharePayment"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Annual Additional Share Payments (Optional)</FormLabel>
+                <FormControl>
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <div className="relative flex-grow">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="50000"
+                          step="1000"
+                          value={field.value || 0}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                         />
-                      </FormControl>
-                      <label
-                        htmlFor={`term-${term.value}`}
-                        className={`
-                          flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all w-full text-center
-                          ${field.value === term.value 
-                            ? 'border-emerald-600 bg-emerald-50 text-emerald-700' 
-                            : 'border-gray-200 hover:border-emerald-200 text-gray-700'}
-                        `}
-                      >
-                        {term.label}
-                      </label>
-                    </FormItem>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                      </div>
+                      <div className="ml-4 w-24 text-right">
+                        <span className="font-medium text-emerald-700">
+                          {new Intl.NumberFormat('en-NZ', {
+                            style: 'currency',
+                            currency: 'NZD',
+                            maximumFractionDigits: 0
+                          }).format(field.value || 0)}
+                        </span>
+                        <span className="text-xs text-gray-500 block">/year</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      Make additional payments to accelerate your path to full ownership.
+                    </p>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </Form>
 
       <Separator />
