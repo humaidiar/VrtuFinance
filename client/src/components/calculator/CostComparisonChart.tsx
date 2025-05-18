@@ -110,11 +110,7 @@ const CostComparisonChart: React.FC<CostComparisonChartProps> = ({ result }) => 
           <p className="text-emerald-700 mt-2">
             Over {result.fullOwnershipYears} years, you could save approximately {formatCurrency(result.totalSavings)} compared to a conventional mortgage at current interest rates.
           </p>
-          {referenceYear && (
-            <p className="text-emerald-700 mt-1">
-              By Year {referenceYear.year}, you'll already save {formatCurrency(referenceYear.savings)}.
-            </p>
-          )}
+
         </div>
       </CardContent>
     </Card>

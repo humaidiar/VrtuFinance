@@ -38,6 +38,7 @@ const MusharakaCalculator: React.FC = () => {
 
   const { watch, handleSubmit, formState } = form;
   const watchAllFields = watch();
+  const additionalSharePayment = watch('additionalSharePayment');
   
   // Process calculation results
   const processCalculation = async (data: CalculatorFormData) => {
@@ -55,6 +56,24 @@ const MusharakaCalculator: React.FC = () => {
       return null;
     }
   };
+  
+  // Update calculation when additional share payment changes
+  useEffect(() => {
+    // Only run calculation if we're on step 4
+    if (currentStep === 4) {
+      const updateCalculation = async () => {
+        const data = form.getValues();
+        await processCalculation(data);
+      };
+      
+      // Debounce to avoid too many API calls
+      const timer = setTimeout(() => {
+        updateCalculation();
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [additionalSharePayment, currentStep]);
 
   const nextStep = async () => {
     if (currentStep < 4) {
