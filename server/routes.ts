@@ -115,7 +115,7 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
   const yearlyBreakdown = [];
   let totalRentPaid = 0;
   let totalSharesPurchased = 0;
-  let fullOwnershipYears = term;
+  let fullOwnershipYears = standardTerm;
   
   // Initial values
   let customerOwnershipPercentage = initialOwnershipPercentage;
@@ -165,7 +165,7 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     }
     
     // Check if we've reached full ownership this year
-    if (remainingProviderShare === 0 && fullOwnershipYears === term) {
+    if (remainingProviderShare === 0 && fullOwnershipYears === standardTerm) {
       fullOwnershipYears = year;
     }
     
@@ -188,9 +188,16 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     }
   }
   
-  // Calculate monthly payment (total of both components for first year)
-  const firstYearWeeklyPayment = yearlyBreakdown[1]?.weeklyPayment || 0;
-  const monthlyPayment = (firstYearWeeklyPayment * 52) / 12;
+  // Calculate the monthly payment - needs to reflect additional payments!
+  const standardMonthlySharePayment = providerShareWithMarkup / standardTerm / 12;
+  const additionalMonthlySharePayment = additionalSharePayment / 12;
+  const totalMonthlySharePayment = standardMonthlySharePayment + additionalMonthlySharePayment;
+  
+  // Calculate initial rent based on initial ownership
+  const initialMonthlyRental = (providerShareWithMarkup * annualRentalRate * (1 - (initialOwnershipPercentage / 100))) / 12;
+  
+  // Total monthly payment combines both components
+  const monthlyPayment = initialMonthlyRental + totalMonthlySharePayment;
   
   return {
     monthlyPayment,
