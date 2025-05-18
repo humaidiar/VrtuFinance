@@ -56,11 +56,19 @@ const StepFour: React.FC<StepFourProps> = ({ form, calculationResult }) => {
   const annualRentalRate = 0.04; // 4% annual rental rate
   const estimatedMonthlyRent = (financedAmount * annualRentalRate) * ((100 - initialOwnershipPercentage) / 100) / 12;
   
+  // Get additional share payment
+  const additionalSharePayment = form.watch('additionalSharePayment') || 0;
+  
   // Estimated monthly acquisition payment (purchasing Vrtu's shares)
-  const estimatedMonthlyAcquisition = financedAmount / (watchTermYears * 12);
+  const standardMonthlyAcquisition = financedAmount / (watchTermYears * 12);
+  const additionalMonthlyAcquisition = additionalSharePayment / 12;
+  const estimatedMonthlyAcquisition = standardMonthlyAcquisition + additionalMonthlyAcquisition;
   
   // Total monthly payment
   const totalMonthlyPayment = estimatedMonthlyRent + estimatedMonthlyAcquisition;
+  
+  // Calculate new estimated ownership years with additional payments
+  const estimatedYearsToFullOwnership = calculationResult ? calculationResult.fullOwnershipYears : watchTermYears;
   
   // Placeholder for payment breakdown chart
   const paymentData = [
@@ -91,34 +99,38 @@ const StepFour: React.FC<StepFourProps> = ({ form, calculationResult }) => {
                   <div className="space-y-3">
                     <div className="flex items-center">
                       <div className="relative flex-grow">
-                        <input
-                          type="range"
-                          min="0"
-                          max="50000"
-                          step="1000"
-                          value={field.value || 0}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
-                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                      </div>
-                      <div className="ml-4 w-24 text-right">
-                        <span className="font-medium text-emerald-700">
-                          {new Intl.NumberFormat('en-NZ', {
-                            style: 'currency',
-                            currency: 'NZD',
-                            maximumFractionDigits: 0
-                          }).format(field.value || 0)}
-                        </span>
-                        <span className="text-xs text-gray-500 block">/year</span>
+                        <div className="flex items-center">
+                          <div className="relative w-full">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                              <span className="text-gray-500">$</span>
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              max="100000"
+                              step="1000"
+                              value={field.value || 0}
+                              onChange={(e) => {
+                                const value = e.target.value === '' ? 0 : Number(e.target.value);
+                                field.onChange(value);
+                              }}
+                              className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                              placeholder="0"
+                            />
+                          </div>
+                          <span className="ml-2 text-sm text-gray-500">/year</span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
                       <p className="text-sm text-gray-600">
-                        Make additional payments to accelerate your path to full ownership.
+                        Enter additional annual payments to accelerate your path to full ownership.
                       </p>
-                      {field.value > 0 && calculationResult && (
+                      {calculationResult && (
                         <div className="text-sm font-medium text-emerald-700">
-                          Estimated full ownership in {calculationResult.fullOwnershipYears} years
+                          {field.value > 0 
+                            ? `Reduce ownership time by ${Math.max(0, watchTermYears - calculationResult.fullOwnershipYears)} years!` 
+                            : `Optional: Add payments to reduce your term`}
                         </div>
                       )}
                     </div>
@@ -154,18 +166,35 @@ const StepFour: React.FC<StepFourProps> = ({ form, calculationResult }) => {
                 <span className="text-gray-500">Rent Component:</span>
                 <span className="font-medium">{formatCurrency(estimatedMonthlyRent)}</span>
               </div>
+              
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Acquisition Component:</span>
-                <span className="font-medium">{formatCurrency(estimatedMonthlyAcquisition)}</span>
+                <span className="text-gray-500">Standard Acquisition:</span>
+                <span className="font-medium">{formatCurrency(standardMonthlyAcquisition)}</span>
               </div>
+              
+              {additionalSharePayment > 0 && (
+                <div className="flex justify-between text-sm text-emerald-700">
+                  <span>Additional Acquisition:</span>
+                  <span className="font-medium">+{formatCurrency(additionalMonthlyAcquisition)}</span>
+                </div>
+              )}
+              
               <div className="flex justify-between text-sm pt-2 border-t border-gray-100">
                 <span className="text-gray-500">Initial Ownership:</span>
                 <span className="font-medium">{initialOwnershipPercentage.toFixed(1)}%</span>
               </div>
+              
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Term:</span>
+                <span className="text-gray-500">Standard Term:</span>
                 <span className="font-medium">{watchTermYears} years</span>
               </div>
+              
+              {additionalSharePayment > 0 && calculationResult && (
+                <div className="flex justify-between text-sm text-emerald-700 font-medium">
+                  <span>Reduced Term:</span>
+                  <span>{calculationResult.fullOwnershipYears} years</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -225,7 +254,23 @@ const StepFour: React.FC<StepFourProps> = ({ form, calculationResult }) => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Full Ownership In</p>
-              <p className="font-medium">{watchTermYears} years</p>
+              <p className="font-medium">
+                {calculationResult ? (
+                  <>
+                    <span className={additionalSharePayment > 0 ? "line-through text-gray-400 mr-2" : ""}>
+                      {watchTermYears}
+                    </span>
+                    {additionalSharePayment > 0 && (
+                      <span className="text-emerald-700">{calculationResult.fullOwnershipYears}</span>
+                    )}
+                  </>
+                ) : watchTermYears} years
+              </p>
+              {additionalSharePayment > 0 && calculationResult && (
+                <p className="text-xs text-emerald-700 font-medium mt-1">
+                  Save {watchTermYears - calculationResult.fullOwnershipYears} years with additional payments!
+                </p>
+              )}
             </div>
           </div>
           
