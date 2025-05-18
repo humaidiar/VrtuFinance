@@ -64,13 +64,15 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
   const {
     propertyPrice,
     depositAmount,
-    term,
     appreciationRate = 3,
     propertyType = 'existing',
     bedroomCount = 3,
     hasBuilderReport = false,
     additionalSharePayment = 0
   } = formData;
+  
+  // Use a standard term of 30 years for baseline calculation
+  const standardTerm = 30;
 
   // Calculate initial ownership percentage
   const initialOwnershipPercentage = (depositAmount / propertyPrice) * 100;
@@ -131,10 +133,10 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     remainingProviderShare: remainingProviderShare,
   });
   
-  // Calculate for each subsequent year
-  for (let year = 1; year <= term; year++) {
-    // Calculate standard annual share payment (based on term)
-    const standardAnnualShare = providerShareWithMarkup / term;
+  // Calculate for each subsequent year - use up to 50 years as maximum calculation period
+  for (let year = 1; year <= 50; year++) {
+    // Calculate standard annual share payment (based on standard term)
+    const standardAnnualShare = providerShareWithMarkup / standardTerm;
     
     // Add any additional share payment
     const totalAnnualSharePayment = standardAnnualShare + additionalSharePayment;
