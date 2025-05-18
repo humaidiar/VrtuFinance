@@ -43,6 +43,8 @@ export const calculationResultSchema = z.object({
   fullOwnershipYears: z.number(),
   totalRentPaid: z.number(),
   totalSharesPurchased: z.number(),
+  conventionalMonthlyPayment: z.number(),
+  totalSavings: z.number(),
   yearlyBreakdown: z.array(
     z.object({
       year: z.number(),
@@ -51,6 +53,14 @@ export const calculationResultSchema = z.object({
       rentComponent: z.number(),
       shareComponent: z.number(),
       remainingProviderShare: z.number(),
+    })
+  ),
+  costComparison: z.array(
+    z.object({
+      year: z.number(),
+      musharakaCost: z.number(),
+      conventionalCost: z.number(),
+      savings: z.number()
     })
   ),
   propertyDetails: z.object({

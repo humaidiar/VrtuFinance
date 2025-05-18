@@ -199,6 +199,53 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
   // Total monthly payment combines both components
   const monthlyPayment = initialMonthlyRental + totalMonthlySharePayment;
   
+  // Calculate conventional mortgage for comparison
+  // Assume 7% interest rate on conventional mortgage
+  const conventionalInterestRate = 0.07;
+  const conventionalLoanAmount = propertyPrice - depositAmount;
+  
+  // Calculate conventional monthly payment using amortization formula
+  const conventionalRate = conventionalInterestRate / 12;
+  const conventionalTerm = standardTerm * 12; // months
+  const conventionalMonthlyPayment = (
+    conventionalLoanAmount * 
+    (conventionalRate * Math.pow(1 + conventionalRate, conventionalTerm)) / 
+    (Math.pow(1 + conventionalRate, conventionalTerm) - 1)
+  );
+  
+  // Calculate cumulative costs for both options
+  const cumulativeCostComparison = [];
+  let musharakaCumulativeCost = 0;
+  let conventionalCumulativeCost = 0;
+  
+  // Include deposit in both initial costs
+  musharakaCumulativeCost += depositAmount;
+  conventionalCumulativeCost += depositAmount;
+  
+  // Calculate year by year cumulative costs
+  for (let year = 1; year <= Math.min(standardTerm, 30); year++) {
+    // For Musharaka, use our yearly breakdown data if available
+    if (year <= yearlyBreakdown.length - 1) {
+      const yearData = yearlyBreakdown[year];
+      const annualMusharakaPayment = yearData.weeklyPayment * 52;
+      musharakaCumulativeCost += annualMusharakaPayment;
+    }
+    
+    // For conventional, it's the same payment throughout
+    conventionalCumulativeCost += conventionalMonthlyPayment * 12;
+    
+    // Add to comparison array
+    cumulativeCostComparison.push({
+      year,
+      musharakaCost: musharakaCumulativeCost,
+      conventionalCost: conventionalCumulativeCost,
+      savings: conventionalCumulativeCost - musharakaCumulativeCost
+    });
+  }
+  
+  // Calculate total savings over the term
+  const totalSavings = conventionalCumulativeCost - musharakaCumulativeCost;
+  
   return {
     monthlyPayment,
     initialOwnershipPercentage,
@@ -206,6 +253,9 @@ function calculateDiminishingMusharaka(formData: z.infer<typeof calculatorFormSc
     totalRentPaid,
     totalSharesPurchased,
     yearlyBreakdown,
+    conventionalMonthlyPayment,
+    costComparison: cumulativeCostComparison,
+    totalSavings,
     propertyDetails: {
       propertyType,
       bedroomCount,
